@@ -749,7 +749,25 @@ InputRegistersMap = [
         "scale": 1,
         "description": "feedin_power2",
     },
-    
+
+]
+
+proccessingMap = [
+    {
+        "name": "PV Power1",
+        "type": "mul",
+        "registers": ["PV Voltage1", "PV Current1"],
+    },
+    {
+        "name": "PV Power2",
+        "type": "mul",
+        "registers": ["PV Voltage2", "PV Current2"],
+    },
+    {
+        "name": "TotalSolarPower",
+        "type": "sum",
+        "registers": ["PV Power1", "PV Power2"],
+    },
 ]
 
 testRegisterMap = [

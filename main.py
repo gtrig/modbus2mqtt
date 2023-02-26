@@ -3,7 +3,7 @@ import pprint
 import time
 from pyModbusTCP.client import ModbusClient
 import paho.mqtt.client as mqtt
-from solax import InputRegistersMap, HoldingRegistersMap
+from solax import InputRegistersMap, HoldingRegistersMap, proccessingMap
 import json
 # from solax import testRegisterMap as InputRegistersMap
 
@@ -105,6 +105,24 @@ def get_register_value(regs, element):
 
     return round(value,2)
 
+def process_results(results, proccessingMap):
+    for element in proccessingMap:
+        if element['type'] == 'sum':
+            value = 0
+            for reg in element['registers']:
+                value += results[reg]
+            results[element['name']] = value
+        elif element['type'] == 'diff':
+            value = results[element['registers'][0]] - results[element['registers'][1]]
+            results[element['name']] = value
+        elif element['type'] == 'div':
+            value = results[element['registers'][0]] / results[element['registers'][1]]
+            results[element['name']] = value
+        elif element['type'] == 'mul':
+            value = results[element['registers'][0]] * results[element['registers'][1]]
+            results[element['name']] = value
+    
+    return results
 
 def decode_registers(regs, input_registers_map):
     results = {}
@@ -113,7 +131,7 @@ def decode_registers(regs, input_registers_map):
             value = get_register_value(regs, element)
             results[element['name']] = value
 
-    return results
+    return process_results(results, proccessingMap) 
 
 def write_holding_register(register, value):
     c.write_single_register(register, value)
