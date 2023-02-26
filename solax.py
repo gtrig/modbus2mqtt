@@ -743,13 +743,12 @@ InputRegistersMap = [
     {
         "address": "0x00C0",
         "length": 2,
-        "name": "feedin_power2",
+        "name": "feedin_power",
         "unit": "W",
         "type": "int32",
         "scale": 1,
         "description": "feedin_power2",
     },
-
 ]
 
 proccessingMap = [
