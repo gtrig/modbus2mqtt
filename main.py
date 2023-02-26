@@ -39,9 +39,6 @@ except ValueError:
 # create mqtt client
 mqttc = mqtt.Client()
 
-# connect to mqtt broker
-mqttc.connect(MQTT_HOST, MQTT_PORT, 60)
-
 def read_input_registers():
     num=MODBUS_REG_NB
     start=MODBUS_REG_ADDR
@@ -140,6 +137,8 @@ def write_holding_register(register, value):
 # result = write_holding_register(0x0088, 25)
 # print(result)
 def main():
+    # connect to mqtt broker
+    mqttc.connect(MQTT_HOST, MQTT_PORT, 60)
 # infinite loop
     while True:
         regs = read_input_registers()
