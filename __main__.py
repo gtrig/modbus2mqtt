@@ -127,7 +127,7 @@ def decode_registers(regs, input_registers_map):
         if int(element['address'],0) in regs:
             value = get_register_value(regs, element)
             results[element['name']] = value
-
+    pp.pprint(results)
     return process_results(results, proccessingMap) 
 
 def write_holding_register(register, value):
