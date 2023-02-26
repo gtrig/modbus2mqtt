@@ -139,26 +139,26 @@ def write_holding_register(register, value):
 
 # result = write_holding_register(0x0088, 25)
 # print(result)
-
+def main():
 # infinite loop
-while True:
-    regs = read_input_registers()
-    results = decode_registers(regs, InputRegistersMap)
-    
-    # publish to mqtt broker
-    mqttc.publish(MQTT_TOPIC, json.dumps(results))
+    while True:
+        regs = read_input_registers()
+        results = decode_registers(regs, InputRegistersMap)
+        
+        # publish to mqtt broker
+        mqttc.publish(MQTT_TOPIC, json.dumps(results))
 
-    # regs = read_holding_registers()
-    # results = decode_registers(regs, HoldingRegistersMap)
-    # pp.pprint(results)
+        # regs = read_holding_registers()
+        # results = decode_registers(regs, HoldingRegistersMap)
+        # pp.pprint(results)
 
-    # print("")
+        # print("")
 
 
-    # sleep 1 second
-    time.sleep(10)
+        # sleep 1 second
+        time.sleep(10)
 
-c.close()
+    c.close()
 
 # run the app
 if __name__ == "__main__":
