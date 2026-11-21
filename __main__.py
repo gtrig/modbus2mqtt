@@ -1,4 +1,5 @@
 # this app reads data from modbus tcp and transmits it to mqtt broker
+import os
 import pprint
 import time
 from pyModbusTCP.client import ModbusClient
@@ -7,6 +8,9 @@ from solax import InputRegistersMap, HoldingRegistersMap, proccessingMap
 import json
 # from solax import testRegisterMap as InputRegistersMap
 
+
+# Set ENABLE_LOGS=true to print decoded readings (fills docker logs if left on)
+ENABLE_LOGS = os.environ.get("ENABLE_LOGS", "false").lower() in ("1", "true", "yes")
 
 # Modbus TCP host IP or DNS name
 MODBUS_HOST = "192.168.88.242"
@@ -127,7 +131,8 @@ def decode_registers(regs, input_registers_map):
         if int(element['address'],0) in regs:
             value = get_register_value(regs, element)
             results[element['name']] = value
-    pp.pprint(results)
+    if ENABLE_LOGS:
+        pp.pprint(results)
     return process_results(results, proccessingMap) 
 
 def write_holding_register(register, value):

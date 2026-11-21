@@ -1,0 +1,16 @@
+services:
+  modbus2mqtt:
+    build: .
+    image: modbus2mqtt:latest
+    container_name: modbus2mqtt
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Athens
+      # Set to true to print every decoded reading to stdout (can fill the disk)
+      ENABLE_LOGS: "false"
+    # Cap container log size even if ENABLE_LOGS is turned on.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
