@@ -8,6 +8,19 @@ services:
       TZ: Europe/Athens
       # Set to true to print every decoded reading to stdout (can fill the disk)
       ENABLE_LOGS: "false"
+      # Inverter (Modbus TCP)
+      MODBUS_HOST: "192.168.88.242"
+      MODBUS_PORT: "502"
+      MODBUS_UNIT_ID: "1"
+      MODBUS_REG_ADDR: "0"
+      MODBUS_REG_NB: "300"
+      MODBUS_BATCH_SIZE: "100"
+      # MQTT broker
+      MQTT_HOST: "192.168.8.200"
+      MQTT_PORT: "1883"
+      MQTT_TOPIC: "solax/metrics"
+      # Seconds between readings
+      POLL_INTERVAL: "10"
     # Cap container log size even if ENABLE_LOGS is turned on.
     logging:
       driver: json-file

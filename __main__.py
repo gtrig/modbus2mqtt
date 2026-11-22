@@ -12,31 +12,44 @@ import json
 # Set ENABLE_LOGS=true to print decoded readings (fills docker logs if left on)
 ENABLE_LOGS = os.environ.get("ENABLE_LOGS", "false").lower() in ("1", "true", "yes")
 
+def env_int(name, default):
+    value = os.environ.get(name, "").strip()
+    if not value:
+        return default
+    try:
+        return int(value, 0)
+    except ValueError:
+        raise SystemExit(f"{name} must be a whole number, got {value!r}")
+
+
+# Every setting below can be overridden with an environment variable of the same name.
 # Modbus TCP host IP or DNS name
-MODBUS_HOST = "192.168.88.242"
+MODBUS_HOST = os.environ.get("MODBUS_HOST") or "192.168.88.242"
 # MODBUS_HOST = "192.168.8.176"
 # Modbus TCP port
-MODBUS_PORT = 502
+MODBUS_PORT = env_int("MODBUS_PORT", 502)
 # Modbus TCP slave unit ID
-MODBUS_UNIT_ID = 1
+MODBUS_UNIT_ID = env_int("MODBUS_UNIT_ID", 1)
 # Modbus TCP register address
-MODBUS_REG_ADDR = 0
+MODBUS_REG_ADDR = env_int("MODBUS_REG_ADDR", 0)
 # Modbus TCP register number
-MODBUS_REG_NB = 300
+MODBUS_REG_NB = env_int("MODBUS_REG_NB", 300)
 # Modbus Batch size
-MODBUS_BATCH_SIZE = 100
+MODBUS_BATCH_SIZE = env_int("MODBUS_BATCH_SIZE", 100)
 # MQTT broker host
-MQTT_HOST = "192.168.8.200"
+MQTT_HOST = os.environ.get("MQTT_HOST") or "192.168.8.200"
 # MQTT broker port
-MQTT_PORT = 1883
+MQTT_PORT = env_int("MQTT_PORT", 1883)
 # MQTT topic
-MQTT_TOPIC = "solax/metrics"
+MQTT_TOPIC = os.environ.get("MQTT_TOPIC") or "solax/metrics"
+# Seconds to wait between readings
+POLL_INTERVAL = env_int("POLL_INTERVAL", 10)
 
 pp = pprint.PrettyPrinter(width=41, compact=True)
 
 # create modbus client
 try:
-    c = ModbusClient(MODBUS_HOST, MODBUS_PORT, auto_open=True, auto_close=True, debug=False)
+    c = ModbusClient(MODBUS_HOST, MODBUS_PORT, unit_id=MODBUS_UNIT_ID, auto_open=True, auto_close=True, debug=False)
 except ValueError:
     print("Error with host or port params")
 
@@ -159,8 +172,8 @@ def main():
         # print("")
 
 
-        # sleep 1 second
-        time.sleep(10)
+        # wait before the next reading
+        time.sleep(POLL_INTERVAL)
 
     c.close()
 
